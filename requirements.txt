@@ -1,0 +1,1 @@
+ross-rotordynamics==3.0.0

@@ -1,0 +1,11 @@
+.venv/
+.cache/
+__pycache__/
+artifacts/
+*.pyc
+/research/
+/tmp/
+/dist/
+.env
+.env.*
+*.log

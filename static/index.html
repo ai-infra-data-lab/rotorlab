@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="rotor-token" content="__TOKEN__"><title>RotorLab — ロータダイナミクス</title>
+<link rel="stylesheet" href="/style.css"><script src="/plotly.min.js" defer></script><script src="/app.js" defer></script></head>
+<body><header><div class="brand"><span class="brand-icon">◎</span><div><strong>RotorLab</strong><small>ガスタービンのロータダイナミクス</small></div><span class="version">0.1 / 単軸・線形</span></div>
+<div class="actions"><button id="sample">サンプル</button><button id="load">モデルを開く</button><button id="save">保存</button><button id="validate">入力チェック</button><button id="run" class="primary">▶ 解析する</button></div></header>
+<div class="statusbar"><span class="dot"></span><span id="status" role="status">モデルを読み込み中…</span><span class="local">LOCAL · PC内で計算</span></div>
+<main><aside><div class="eyebrow">MODEL BUILDER</div><h2>ロータモデル</h2><nav id="parts"></nav>
+<div class="aside-note"><b>計算の前提</b><p>Timoshenkoはり<br>剛体円板・ジャイロ効果<br>地面に固定した線形軸受<br>一定の動特性係数</p><a href="#theory">理論と制限を確認 ↓</a></div></aside>
+<section class="workspace"><div class="model-title"><div><div class="eyebrow">ROTOR ASSEMBLY</div><input id="model-name" aria-label="モデル名"></div><span id="dirty" class="badge">未解析</span></div>
+<div class="panel geometry"><div class="panel-heading"><h3>ロータ構成</h3><span>部品を選択して入力表と連動 · 寸法 mm</span></div><div id="geometry"></div></div>
+<div class="panel editor"><div class="panel-heading"><h3 id="editor-title">軸要素</h3><button id="add">＋ 行を追加</button></div><div id="editor"></div></div>
+<section id="results" class="panel"><div class="panel-heading"><div><div class="eyebrow">ANALYSIS RESULTS</div><h3>解析結果</h3></div><div class="actions"><button id="pin" disabled>比較に保持</button><button id="clear-pin" disabled>比較を解除</button><button id="csv" disabled>CSV出力</button></div></div>
+<div id="empty"><span>◎</span><h3>モデルから、振動の特性を読み解く</h3><p>寸法・軸受係数・運転条件を設定し「解析する」を押してください。</p><small>初期モデルは架空の検討用サンプルです。実機データではありません。</small></div>
+<div id="result-content" hidden><div id="stale-result" class="notes" hidden>入力が変更されています。この結果は前回の入力に対応しています。再解析してください。</div><div id="metrics" class="metrics"></div><div class="tabs" id="tabs"></div><div id="result-tools"></div><div id="plot"></div><div id="detail"></div><div id="notes" class="notes"></div><div id="provenance"></div></div></section>
+<details id="theory" class="panel"><summary>理論・表示規約・初期版の制限</summary><p>Mq̈ + (C + ΩG)q̇ + Kq = F。ROSSで組み立てた行列から横方向の自由度を抽出し、複素固有値と同期応答を求めます。モード追跡は質量重み付きMACで行います。</p><p>回転は +z 軸まわり x→y。q(t)=Re(Q exp(iωt))。片振幅・地面基準の絶対変位を表示。モード形状は最大横変位で正規化した節点値です。軸受反力は軸受からロータへの静荷重、動反力は同期成分の片振幅です。</p><p>軸受・シール係数はユーザー指定の一定値。初期版では油膜計算、周波数依存係数、支持構造の自由度、熱連成、円板変形、複数軸、ねじり、接触、過渡解析を含みません。静解析ではシールを重量支持に使いません。実固有値のみの非振動モードは未対応です。</p><p>危険速度は表示モードの1×交点の補間値。分割点・軸要素数の収束を確認してください。規格適合・実機安全性の判定機能はありません。</p><p><a href="https://github.com/petrobras/ross" target="_blank" rel="noreferrer">ROSS / Apache-2.0</a> · <a href="https://ross.readthedocs.io/en/v3.0.0/" target="_blank" rel="noreferrer">計算基盤の公式資料</a></p></details>
+</section></main><input id="file" type="file" accept=".json,application/json" hidden><div id="error" role="alert" hidden></div></body></html>

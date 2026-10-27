@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "name": "単軸タービン・学習モデル（架空）",
+  "note": "寸法・物性・軸受係数は説明用の仮定値。実機データではありません。",
+  "material": {
+    "rho": 7810,
+    "E_GPa": 211,
+    "G_GPa": 81.2
+  },
+  "shafts": [
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0
+    }
+  ],
+  "disks": [
+    {
+      "node": 2,
+      "mass_kg": 32.58972765,
+      "Id_kgm2": 0.17808928,
+      "Ip_kgm2": 0.32956362
+    },
+    {
+      "node": 4,
+      "mass_kg": 52.96625953,
+      "Id_kgm2": 0.4604787,
+      "Ip_kgm2": 0.86744423
+    }
+  ],
+  "bearings": [
+    {
+      "node": 0,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    },
+    {
+      "node": 6,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    }
+  ],
+  "seals": [],
+  "unbalances": [
+    {
+      "node": 2,
+      "g_mm": 100,
+      "phase_deg": 0
+    }
+  ],
+  "analysis": {
+    "max_rpm": 12000,
+    "operating_rpm": 6000,
+    "points": 61,
+    "probe_node": 4,
+    "modes": 6
+  }
+}
