@@ -13,10 +13,11 @@ for _key in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
     os.environ.setdefault(_key, "1")
 import warnings
 import numpy as np
-from scipy import linalg
+from scipy import linalg, sparse
 from scipy.optimize import linear_sum_assignment
 import ross as rs
-from model import validate_model, InputError
+from model import validate_model, sweep_cases, InputError
+from limits import LIMITS
 
 
 def coefficient_matrix(el, prefix):
@@ -26,10 +27,14 @@ def coefficient_matrix(el, prefix):
 
 def assemble(data):
     d = validate_model(data)
-    mat = rs.Material(name="UserMaterial", rho=d["material"]["rho"],
-                      E=d["material"]["E_GPa"] * 1e9, G_s=d["material"]["G_GPa"] * 1e9)
+    materials = {m["id"]: m for m in d["materials"]}
+    def material(s, i):
+        props = materials[s.get("material_id") or d["default_material_id"]]
+        return rs.Material(name=f"ShaftMaterial{i}", rho=props["rho"],
+                           E=props["E_GPa"] * 1e9, G_s=props["G_GPa"] * 1e9)
     shafts = [rs.ShaftElement(n=i, L=s["length_mm"] / 1000, idl=s["id_mm"] / 1000,
-                              odl=s["od_mm"] / 1000, material=mat,
+                              odl=s["od_mm"] / 1000, idr=s["idr_mm"] / 1000,
+                              odr=s["odr_mm"] / 1000, material=material(s, i),
                               shear_effects=True, rotary_inertia=True, gyroscopic=True)
               for i, s in enumerate(d["shafts"])]
     disks = [rs.DiskElement(n=s["node"], m=s["mass_kg"], Id=s["Id_kgm2"], Ip=s["Ip_kgm2"])
@@ -49,24 +54,84 @@ def assemble(data):
     return d, rotor, M, K, C, G
 
 
+def _state_eigen(A):
+    n = len(A) // 2
+    values, vectors = linalg.eig(A, check_finite=False, overwrite_a=True)
+    if np.any(np.abs(values.imag) < 1e-7):
+        raise InputError("非振動の実固有値を検出しました。支持・減衰・連成係数を確認してください。")
+    keep = np.flatnonzero(values.imag > 1e-7)
+    keep = keep[np.argsort(values[keep].imag)]
+    return values[keep], vectors[:n, keep]
+
+
 def eigen(M, K, D):
     n = len(M)
     A = np.zeros((2*n, 2*n))
     A[:n, n:] = np.eye(n)
     A[n:, :n] = -linalg.solve(M, K, assume_a="pos")
     A[n:, n:] = -linalg.solve(M, D, assume_a="pos")
-    values, vectors = linalg.eig(A, check_finite=False)
-    if np.any(np.abs(values.imag) < 1e-7):
-        raise InputError("非振動の実固有値を検出しました。支持・減衰・連成係数を確認してください（初期版の対象外）。")
-    keep = np.flatnonzero(values.imag > 1e-7)
-    keep = keep[np.argsort(values[keep].imag)]
-    return values[keep], vectors[:n, keep]
+    return _state_eigen(A)
+
+
+def eigen_solver(M, K, C, G):
+    """Factor the same mass matrix once; still solve the complete spectrum."""
+    n = len(M)
+    factor = linalg.cho_factor(M)
+    base = np.zeros((2*n, 2*n))
+    base[:n, n:] = np.eye(n)
+    base[n:, :n] = -linalg.cho_solve(factor, K)
+    base[n:, n:] = -linalg.cho_solve(factor, C)
+    gyro = -linalg.cho_solve(factor, G)
+    def solve(omega):
+        A = base.copy()
+        A[n:, n:] += omega * gyro
+        return _state_eigen(A)
+    return solve
+
+
+def banded(matrix, width=7):
+    """Adjacent four-DOF nodes give at most seven off-diagonals."""
+    n = len(matrix)
+    out = np.zeros((2*width+1, n), dtype=matrix.dtype)
+    for offset in range(-width, width+1):
+        start, stop = max(0, offset), min(n, n+offset)
+        out[width-offset, start:stop] = np.diag(matrix, offset)
+    return out
+
+
+def normalized_shapes(vectors):
+    trans = np.array([i for n in range(len(vectors)//4) for i in (4*n, 4*n+1)])
+    shapes = []
+    for q in vectors.T:
+        qn = q / q[trans[np.argmax(abs(q[trans]))]]
+        shapes.append({"x_re": _clean_array(qn[0::4].real), "x_im": _clean_array(qn[0::4].imag),
+                       "y_re": _clean_array(qn[1::4].real), "y_im": _clean_array(qn[1::4].imag)})
+    return shapes
+
+
+def mode_shapes_at(data, rpm, targets):
+    """Recompute requested-speed shapes, matching stored tracked eigenvalues."""
+    d, _, M, K, C, G = assemble(data)
+    if isinstance(rpm, bool) or not isinstance(rpm, (int, float)) or not np.isfinite(rpm) or not 0 <= rpm <= d['analysis']['max_rpm']:
+        raise InputError("モード形状の回転数を確認してください。")
+    t = np.asarray(targets, dtype=float)
+    if t.shape != (d['analysis']['modes'], 2) or not np.isfinite(t).all():
+        raise InputError("モード形状の固有値を確認してください。")
+    vals, vec = eigen(M, K, C + rpm*np.pi/30*G)
+    expected = t[:, 0] + 2j*np.pi*t[:, 1]
+    distance = abs(expected[:, None] - vals[None, :]) / np.maximum(1, abs(expected[:, None]))
+    rows, cols = linear_sum_assignment(distance)
+    order = cols[np.argsort(rows)]
+    if np.max(distance[np.arange(len(t)), order]) > 1e-5:
+        raise InputError("保存した固有値と一致しません。再解析してください。")
+    return {"mode_shapes": normalized_shapes(vec[:, order])}
 
 
 def mac_matrix(previous, current, mass):
-    inner = previous.conj().T @ mass @ current
+    weighted = mass @ current
+    inner = previous.conj().T @ weighted
     a = np.real(np.sum(previous.conj() * (mass @ previous), axis=0))
-    b = np.real(np.sum(current.conj() * (mass @ current), axis=0))
+    b = np.real(np.sum(current.conj() * weighted, axis=0))
     return np.clip(abs(inner)**2 / np.outer(a, b), 0, 1)
 
 
@@ -81,7 +146,7 @@ def _clean_array(x):
     return np.asarray(x, dtype=float).tolist()
 
 
-def analyze(data):
+def analyze(data, *, include_shapes=True):
     d, rotor, M, K, C, G = assemble(data)
     a = d["analysis"]
     # Include selected operating speed exactly in the scan.
@@ -89,17 +154,21 @@ def analyze(data):
     ns = len(d["shafts"]) + 1
     count = a["modes"]
     freq, decay, logs, shapes, directions, quality, max_real = [], [], [], [], [], [], []
+    solve_eigen = eigen_solver(M, K, C, G)
+    mass_sparse = sparse.csr_matrix(M)
+    all_shapes = include_shapes and len(rpms)*count*ns*4 <= LIMITS["shape_values"]
+    op = int(np.argmin(abs(rpms-a["operating_rpm"])))
     prev = None
     min_mac = 1.0
-    for rpm in rpms:
+    for speed_index, rpm in enumerate(rpms):
         omega = rpm * np.pi / 30
-        vals, vec = eigen(M, K, C + omega * G)
+        vals, vec = solve_eigen(omega)
         max_real.append(float(np.max(vals.real)))
         if prev is None:
             order = np.arange(count)
             scores = np.ones(count)
         else:
-            mac = mac_matrix(prev, vec, M)
+            mac = mac_matrix(prev, vec, mass_sparse)
             rows, cols = linear_sum_assignment(-mac)
             order = cols[np.argsort(rows)]
             scores = mac[np.arange(count), order]
@@ -111,15 +180,8 @@ def analyze(data):
         logs.append(-2 * np.pi * vals.real / vals.imag)
         quality.append(scores)
         directions.append([whirl(vec[:, j]) for j in range(count)])
-        # Normalize mode shapes by largest lateral displacement, phase at maximum component.
-        trans = np.array([i for n in range(ns) for i in (4*n, 4*n+1)])
-        norm_shapes = []
-        for q in vec.T:
-            anchor = q[trans[np.argmax(abs(q[trans]))]]
-            qn = q / anchor
-            norm_shapes.append({"x_re": _clean_array(qn[0::4].real), "x_im": _clean_array(qn[0::4].imag),
-                                "y_re": _clean_array(qn[1::4].real), "y_im": _clean_array(qn[1::4].imag)})
-        shapes.append(norm_shapes)
+        # Keep the operating point; other shapes are requested on demand for large scans.
+        shapes.append(normalized_shapes(vec) if include_shapes and (all_shapes or speed_index == op) else None)
     freq, decay, logs = np.array(freq), np.array(decay), np.array(logs)
     criticals = []
     for j in range(count):
@@ -150,6 +212,7 @@ def analyze(data):
         reactions.append({"node": b["node"], "fx_N": float(r[0]), "fy_N": float(r[1])})
     # Synchronous linear response at every scan speed; no modal truncation.
     responses, dynamic_reactions = [], []
+    Mb, Kb, Cb, Gb = (banded(x) for x in (M, K, C, G))
     for rpm in rpms:
         w = rpm * np.pi / 30
         F = np.zeros(len(M), dtype=complex)
@@ -160,7 +223,12 @@ def analyze(data):
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("error", linalg.LinAlgWarning)
-                Q = linalg.solve(K - w*w*M + 1j*w*(C+w*G), F)
+                Q = linalg.solve_banded((7, 7), Kb - w*w*Mb + 1j*w*(Cb+w*Gb), F)
+                # Check the full-system residual, including cross-coupled coefficients.
+                A = K - w*w*M + 1j*w*(C+w*G)
+                scale = np.linalg.norm(A, ord=np.inf)*np.linalg.norm(Q, ord=np.inf) + np.linalg.norm(F, ord=np.inf)
+                if np.linalg.norm(A@Q-F, ord=np.inf) > 1e-9*max(scale, 1e-30):
+                    raise linalg.LinAlgError("Response residual exceeds tolerance")
         except (linalg.LinAlgError, linalg.LinAlgWarning) as exc:
             raise InputError("同期応答が特異または悪条件です。無減衰の共振点・係数・分割点を確認してください。") from exc
         responses.append(Q)
@@ -186,7 +254,7 @@ def analyze(data):
     if any(not x.get("source", "").strip() for x in d["bearings"] + d["seals"]):
         notes.append("出典が未入力の動特性係数があります。")
     return {
-        "model": d, "engine": f"ROSS {rs.__version__} / lateral matrix solver 0.1",
+        "model": d, "engine": f"ROSS {rs.__version__} / lateral matrix solver 0.4",
         "rpm": rpms.tolist(), "frequency_hz": freq.tolist(), "real_part": decay.tolist(),
         "log_dec": logs.tolist(), "whirl": directions, "mac": np.array(quality).tolist(),
         "max_real_all_modes": max_real, "critical_speeds": criticals,
@@ -205,3 +273,24 @@ def analyze(data):
         "mass_kg": float(np.sum((M @ accel)[1::4]) / -9.80665),
         "notes": notes,
     }
+
+
+def analyze_sweep(data, specification):
+    """Independent full solves; skip shape generation for comparison cases."""
+    cases = sweep_cases(data, specification, lazy=True)
+    fields = ("engine", "rpm", "max_real_all_modes",
+              "critical_speeds", "amplitude_x_um", "amplitude_y_um", "phase_x_deg", "phase_y_deg",
+              "operating_index", "stability", "peak_rpm", "peak_um", "mass_kg", "notes")
+    output = []
+    for case in cases:
+        summary = {key: case[key] for key in ("index", "parameters")}
+        try:
+            result = analyze(case["model"], include_shapes=False)
+            compact = {key: result[key] for key in fields}
+            compact["lowest_frequency_hz"] = np.min(result["frequency_hz"], axis=1).tolist()
+            output.append(dict(summary, status="ok", result=compact))
+        except (InputError, ValueError, linalg.LinAlgError) as exc:
+            output.append(dict(summary, status="error", error=str(exc)))
+    success = sum(c["status"] == "ok" for c in output)
+    return dict(cases=output, total=len(output), success=success, failed=len(output)-success,
+                specification=specification, base_model=validate_model(data))

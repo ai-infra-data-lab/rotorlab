@@ -1,0 +1,11 @@
+{
+  "shafts": 512,
+  "components": 40,
+  "points": 1001,
+  "modes": 32,
+  "sweep_cases": 256,
+  "sweep_parameters": 32,
+  "request_bytes": 8388608,
+  "shape_values": 262144,
+  "materials": 1024
+}

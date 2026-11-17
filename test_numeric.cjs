@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const n=require('./static/numeric.js');
+for(const [text,expected] of [['1.2E6',1.2e6],[' -3D-4 ',-3e-4],['.5e+2',50],['0',0]])assert.equal(n.parse(text),expected);
+for(const text of ['','1e','Infinity','NaN','0x10','1,000','2**4','1e400'])assert.equal(n.parse(text),null,text);
+assert.deepEqual(n.list('5E5, 1e6\n2D6'),[5e5,1e6,2e6]);
+assert.throws(()=>n.list('1e6, broken'));
+assert.throws(()=>n.list(''));
+const exact=32.58972765123456;
+assert.equal(n.parse(n.format(exact,'scientific',false,true)),exact,'editing round trip preserves full numeric value');
+assert.match(n.format(exact),/E\+1$/);
+assert.equal(n.format(4,'scientific',true),'4','node indices stay integers');
+assert.equal(n.combinations({mode:'cartesian',parameters:[{values:[1,2]},{values:[3,4,5]}]}),6);
+assert.equal(n.combinations({mode:'paired',parameters:[{values:[1,2]},{values:[3,4]}]}),2);
+console.log('Numeric checks passed: E/D input, invalid text, lossless editing, integer indices, case counts.');

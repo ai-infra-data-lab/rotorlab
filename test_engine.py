@@ -132,7 +132,7 @@ class HttpTests(unittest.TestCase):
     def test_page_and_assets(self):
         with urllib.request.urlopen(self.url) as r:
             page=r.read().decode();self.assertIn('RotorLab',page);self.assertIn(self.token,page)
-        for path in ('/app.js','/style.css','/plotly.min.js'):
+        for path in ('/app.js','/limits.js','/numeric.js','/sweep.js','/style.css','/plotly.min.js'):
             with urllib.request.urlopen(self.url+path) as r:self.assertGreater(len(r.read()),100)
 
     def test_local_api_analysis_and_rejection(self):
@@ -146,6 +146,40 @@ class HttpTests(unittest.TestCase):
         req=urllib.request.Request(self.url+'/api/validate',json.dumps(bad_model).encode(),{'Content-Type':'application/json','X-RotorLab-Token':self.token})
         with self.assertRaises(urllib.error.HTTPError) as caught:urllib.request.urlopen(req)
         self.assertEqual(caught.exception.code,400)
+
+    def test_batch_endpoint(self):
+        body={'model':sample_model(),'specification':{'mode':'paired','parameters':[
+            {'bearing':0,'coefficient':'kxx_kyy','values':[5e5,1e6]}]}}
+        req=urllib.request.Request(self.url+'/api/sweep',json.dumps(body).encode(),
+            {'Content-Type':'application/json','X-RotorLab-Token':self.token})
+        with urllib.request.urlopen(req) as r:data=json.load(r)
+        self.assertEqual((data['total'],data['success']),(2,2))
+
+    def test_large_model_payload_and_shared_limits(self):
+        from limits import LIMITS
+        d=sample_model();d['note']='x'*350000
+        req=urllib.request.Request(self.url+'/api/validate',json.dumps(d).encode(),
+            {'Content-Type':'application/json','X-RotorLab-Token':self.token})
+        with urllib.request.urlopen(req) as r:
+            self.assertEqual(len(json.load(r)['model']['note']),350000)
+        with urllib.request.urlopen(self.url+'/limits.js') as r:
+            text=r.read().decode()
+            self.assertIn(str(LIMITS['request_bytes']),text)
+            self.assertIn(str(LIMITS['shafts']),text)
+        oversized=urllib.request.Request(self.url+'/api/validate',b'{}',
+            {'Content-Length':str(LIMITS['request_bytes']+1),'X-RotorLab-Token':self.token})
+        with self.assertRaises(urllib.error.HTTPError) as caught:
+            urllib.request.urlopen(oversized)
+        self.assertEqual(caught.exception.code,413)
+
+    def test_mode_shape_endpoint(self):
+        d=sample_model();d['analysis']['points']=3
+        r=analyze(d);i=r['operating_index']
+        body=dict(model=d,rpm=r['rpm'][i],targets=list(zip(r['real_part'][i],r['frequency_hz'][i])))
+        req=urllib.request.Request(self.url+'/api/mode',json.dumps(body).encode(),
+            {'Content-Type':'application/json','X-RotorLab-Token':self.token})
+        with urllib.request.urlopen(req) as response:
+            self.assertEqual(len(json.load(response)['mode_shapes']),d['analysis']['modes'])
 
 
 if __name__=='__main__':unittest.main()

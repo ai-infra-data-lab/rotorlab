@@ -1,0 +1,6 @@
+{
+  "name": "rotorlab-ui-checks",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {"test": "node test_numeric.cjs && node verify_ui_logic.cjs"}
+}

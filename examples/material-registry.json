@@ -1,0 +1,125 @@
+{
+  "schema_version": 3,
+  "name": "複数材料の割当例（架空）",
+  "note": "材料登録と要素への割当を確認するための架空モデル。実在の材料規格や実機物性を保証しません。",
+  "shafts": [
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0,
+      "material_id": "material-b"
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0,
+      "material_id": "material-b"
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 250,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    }
+  ],
+  "disks": [
+    {
+      "node": 2,
+      "mass_kg": 32.58972765,
+      "Id_kgm2": 0.17808928,
+      "Ip_kgm2": 0.32956362
+    },
+    {
+      "node": 4,
+      "mass_kg": 52.96625953,
+      "Id_kgm2": 0.4604787,
+      "Ip_kgm2": 0.86744423
+    }
+  ],
+  "bearings": [
+    {
+      "node": 0,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    },
+    {
+      "node": 6,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    }
+  ],
+  "seals": [],
+  "unbalances": [
+    {
+      "node": 2,
+      "g_mm": 100,
+      "phase_deg": 0
+    }
+  ],
+  "analysis": {
+    "max_rpm": 12000,
+    "operating_rpm": 6000,
+    "points": 21,
+    "probe_node": 4,
+    "modes": 6
+  },
+  "materials": [
+    {
+      "rho": 7810,
+      "E_GPa": 211,
+      "G_GPa": 81.2,
+      "id": "default",
+      "name": "仮定材A",
+      "source": "検証用の仮定値"
+    },
+    {
+      "id": "material-b",
+      "name": "仮定材B",
+      "rho": 4500,
+      "E_GPa": 110,
+      "G_GPa": 42,
+      "source": "検証用の仮定値"
+    }
+  ],
+  "default_material_id": "default"
+}

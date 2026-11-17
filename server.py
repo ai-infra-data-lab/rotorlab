@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from model import InputError, sample_model, validate_model
+from limits import LIMITS
 
 ROOT = Path(__file__).resolve().parent
 TOKEN = secrets.token_urlsafe(32)
@@ -40,9 +41,11 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"error": "Invalid Host"}, 403)
         path = urlsplit(self.path).path
         if path == "/api/sample":
-            return self.json(sample_model())
+            return self.json(validate_model(sample_model()))
         if path == "/api/health":
-            return self.json({"ok": True, "app": "RotorLab", "version": "0.1.0"})
+            return self.json({"ok": True, "app": "RotorLab", "version": "0.4.0"})
+        if path == "/limits.js":
+            return self.send(200, "const RotorLimits = Object.freeze(" + json.dumps(LIMITS) + ");", "text/javascript; charset=utf-8")
         if path == "/":
             html = (ROOT / "static/index.html").read_text(encoding="utf-8").replace("__TOKEN__", TOKEN)
             return self.send(200, html, "text/html; charset=utf-8")
@@ -50,6 +53,8 @@ class Handler(BaseHTTPRequestHandler):
             from plotly.offline import get_plotlyjs
             return self.send(200, get_plotlyjs(), "text/javascript; charset=utf-8")
         files = {"/app.js": ("app.js", "text/javascript; charset=utf-8"),
+                 "/numeric.js": ("numeric.js", "text/javascript; charset=utf-8"),
+                 "/sweep.js": ("sweep.js", "text/javascript; charset=utf-8"),
                  "/style.css": ("style.css", "text/css; charset=utf-8")}
         if path in files:
             name, mime = files[path]
@@ -61,21 +66,24 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"error": "この画面から操作してください。"}, 403)
         if self.headers.get("Origin") not in (None, f"http://127.0.0.1:{self.server.server_port}", f"http://localhost:{self.server.server_port}"):
             return self.json({"error": "Invalid Origin"}, 403)
-        if self.path not in ("/api/validate", "/api/analyze"):
+        if self.path not in ("/api/validate", "/api/analyze", "/api/sweep", "/api/mode"):
             return self.json({"error": "Not found"}, 404)
         try:
             size = int(self.headers.get("Content-Length", 0))
-            if not 0 < size <= 300000:
-                return self.json({"error": "モデルは300KB以内にしてください。"}, 413)
+            if not 0 < size <= LIMITS["request_bytes"]:
+                return self.json({"error": f"モデルは{LIMITS['request_bytes']//1024//1024}MiB以内にしてください。"}, 413)
             data = json.loads(self.rfile.read(size))
-            valid = validate_model(data)
+            valid = validate_model(data.get("model") if self.path in ("/api/sweep", "/api/mode") and isinstance(data, dict) else data)
             if self.path == "/api/validate":
                 return self.json({"ok": True, "model": valid})
             if not SOLVER_LOCK.acquire(blocking=False):
                 return self.json({"error": "別の計算を実行中です。完了後に再実行してください。"}, 409)
             try:
-                from engine import analyze
-                result = analyze(valid)
+                from engine import analyze, analyze_sweep, mode_shapes_at
+                if self.path == "/api/mode":
+                    result = mode_shapes_at(valid, data.get("rpm"), data.get("targets"))
+                else:
+                    result = analyze_sweep(valid, data.get("specification")) if self.path == "/api/sweep" else analyze(valid)
                 self.json(result)
             finally:
                 SOLVER_LOCK.release()

@@ -1,0 +1,767 @@
+{
+  "schema_version": 2,
+  "name": "100要素・単軸ロータ試験モデル（架空）",
+  "note": "付属6要素サンプルの各区間を17/16/17/17/16/17分割。全長1500 mm、円板位置500/1000 mm、端部軸受を維持した100要素の動作・分割比較用モデル。実機データではありません。",
+  "material": {
+    "rho": 7810,
+    "E_GPa": 211,
+    "G_GPa": 81.2
+  },
+  "shafts": [
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 15.625,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    },
+    {
+      "length_mm": 14.705882352941176,
+      "od_mm": 50,
+      "id_mm": 0,
+      "odr_mm": 50,
+      "idr_mm": 0
+    }
+  ],
+  "disks": [
+    {
+      "node": 33,
+      "mass_kg": 32.58972765,
+      "Id_kgm2": 0.17808928,
+      "Ip_kgm2": 0.32956362
+    },
+    {
+      "node": 67,
+      "mass_kg": 52.96625953,
+      "Id_kgm2": 0.4604787,
+      "Ip_kgm2": 0.86744423
+    }
+  ],
+  "bearings": [
+    {
+      "node": 0,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    },
+    {
+      "node": 100,
+      "kxx": 1000000.0,
+      "kyy": 1000000.0,
+      "kxy": 0,
+      "kyx": 0,
+      "cxx": 500,
+      "cyy": 500,
+      "cxy": 0,
+      "cyx": 0,
+      "source": "仮定値"
+    }
+  ],
+  "seals": [],
+  "unbalances": [
+    {
+      "node": 33,
+      "g_mm": 100,
+      "phase_deg": 0
+    }
+  ],
+  "analysis": {
+    "max_rpm": 12000,
+    "operating_rpm": 6000,
+    "points": 21,
+    "probe_node": 67,
+    "modes": 12
+  }
+}
