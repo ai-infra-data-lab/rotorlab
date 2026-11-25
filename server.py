@@ -11,6 +11,7 @@ from urllib.parse import urlsplit
 
 from model import InputError, sample_model, validate_model
 from limits import LIMITS
+from balance import calculate_balance
 
 ROOT = Path(__file__).resolve().parent
 TOKEN = secrets.token_urlsafe(32)
@@ -53,6 +54,7 @@ class Handler(BaseHTTPRequestHandler):
             from plotly.offline import get_plotlyjs
             return self.send(200, get_plotlyjs(), "text/javascript; charset=utf-8")
         files = {"/app.js": ("app.js", "text/javascript; charset=utf-8"),
+                 "/balance.js": ("balance.js", "text/javascript; charset=utf-8"),
                  "/numeric.js": ("numeric.js", "text/javascript; charset=utf-8"),
                  "/sweep.js": ("sweep.js", "text/javascript; charset=utf-8"),
                  "/style.css": ("style.css", "text/css; charset=utf-8")}
@@ -66,16 +68,18 @@ class Handler(BaseHTTPRequestHandler):
             return self.json({"error": "この画面から操作してください。"}, 403)
         if self.headers.get("Origin") not in (None, f"http://127.0.0.1:{self.server.server_port}", f"http://localhost:{self.server.server_port}"):
             return self.json({"error": "Invalid Origin"}, 403)
-        if self.path not in ("/api/validate", "/api/analyze", "/api/sweep", "/api/mode"):
+        if self.path not in ("/api/validate", "/api/analyze", "/api/sweep", "/api/mode", "/api/balance"):
             return self.json({"error": "Not found"}, 404)
         try:
             size = int(self.headers.get("Content-Length", 0))
             if not 0 < size <= LIMITS["request_bytes"]:
                 return self.json({"error": f"モデルは{LIMITS['request_bytes']//1024//1024}MiB以内にしてください。"}, 413)
             data = json.loads(self.rfile.read(size))
-            valid = validate_model(data.get("model") if self.path in ("/api/sweep", "/api/mode") and isinstance(data, dict) else data)
+            valid = validate_model(data.get("model") if self.path in ("/api/sweep", "/api/mode", "/api/balance") and isinstance(data, dict) else data)
             if self.path == "/api/validate":
                 return self.json({"ok": True, "model": valid})
+            if self.path == "/api/balance":
+                return self.json(calculate_balance(valid, data.get("settings")))
             if not SOLVER_LOCK.acquire(blocking=False):
                 return self.json({"error": "別の計算を実行中です。完了後に再実行してください。"}, 409)
             try:

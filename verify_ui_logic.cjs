@@ -11,6 +11,7 @@ const sandbox={console,structuredClone,URL,Blob,setTimeout,confirm:()=>true,
 const ctx=vm.createContext(sandbox);
 vm.runInContext('const RotorLimits = '+fs.readFileSync('limits.json','utf8'),ctx);
 vm.runInContext(fs.readFileSync('static/numeric.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('static/balance.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('static/app.js','utf8'),ctx);
 vm.runInContext(fs.readFileSync('static/sweep.js','utf8'),ctx);
 const run=code=>vm.runInContext(code,ctx);

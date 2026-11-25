@@ -9,7 +9,7 @@ let numberMode='scientific';
 const token=document.querySelector('meta[name=rotor-token]').content;
 const coeffs=[['node','節点'],['kxx','kxx [N/m]'],['kyy','kyy [N/m]'],['kxy','kxy [N/m]'],['kyx','kyx [N/m]'],['cxx','cxx [N s/m]'],['cyy','cyy [N s/m]'],['cxy','cxy [N s/m]'],['cyx','cyx [N s/m]'],['source','係数の出典']];
 const columns={shafts:[['length_mm','長さ [mm]'],['od_mm','左外径 [mm]'],['id_mm','左内径 [mm]'],['odr_mm','右外径 [mm]'],['idr_mm','右内径 [mm]'],['material_id','材料']],disks:[['node','節点'],['mass_kg','質量 [kg]'],['Id_kgm2','直径まわり Id [kg m²]'],['Ip_kgm2','極慣性 Ip [kg m²]']],bearings:coeffs,seals:coeffs,unbalances:[['node','節点'],['g_mm','不釣合い [g mm]'],['phase_deg','位相 [deg]']]};
-const labels={shafts:'軸要素',disks:'円板',bearings:'軸受',seals:'シール',unbalances:'不釣合い',material:'材料一覧・注記',analysis:'解析条件'};
+const labels={shafts:'軸要素',disks:'円板',bearings:'軸受',seals:'シール',unbalances:'不釣合い',balance:'JIS 釣合い許容値',material:'材料一覧・注記',analysis:'解析条件'};
 const defaults={shafts:{length_mm:100,od_mm:50,id_mm:0,odr_mm:50,idr_mm:0},disks:{node:1,mass_kg:10,Id_kgm2:.05,Ip_kgm2:.08},bearings:{node:0,kxx:1e6,kyy:1e6,kxy:0,kyx:0,cxx:500,cyy:500,cxy:0,cyx:0,source:'仮定値'},seals:{node:1,kxx:0,kyy:0,kxy:0,kyx:0,cxx:0,cyy:0,cxy:0,cyx:0,source:'仮定値'},unbalances:{node:1,g_mm:100,phase_deg:0}};
 function selectedMaterial(row){return model.materials.find(m=>m.id===(row.material_id??model.default_material_id));}
 function materialOptions(value,inherit=true){return (inherit?`<option value="" ${value==null?'selected':''}>既定: ${esc(model.materials.find(m=>m.id===model.default_material_id)?.name)}</option>`:'')+model.materials.map(m=>`<option value="${esc(m.id)}" ${m.id===value?'selected':''}>${esc(m.name)}</option>`).join('');}
@@ -56,6 +56,7 @@ function render(){renderNav();$('model-name').value=model.name;$('editor-title')
 function renderEditor(){
  if(section==='material'){renderMaterials();return;}
  if(columns[section]){
+ if(section==='balance'){renderBalance();return;}
   const cols=columns[section];
   $('editor').innerHTML=`<table><thead><tr><th>#</th>${cols.map(c=>`<th>${c[1]}</th>`).join('')}<th></th></tr></thead><tbody>${model[section].map((row,i)=>`<tr data-row="${i}" class="${selected===i?'highlight':''}"><td>${i}</td>${cols.map(([k,label])=>`<td>${shaftCell(row,i,k,label)}</td>`).join('')}<td><button data-delete="${i}" aria-label="行${i}を削除">×</button></td></tr>`).join('')}</tbody></table><p class="formhint">節点は0から始まり、軸要素 i は節点 i と i+1 を接続。左右の直径が異なるとテーパーです。物性は材料一覧で登録・編集します。指数入力例: 1.0E6。タブ区切りの材料列は登録した材料名またはID、空欄/「既定」は既定材料です。</p>`;
   $('editor').querySelectorAll('select[data-key="material_id"]').forEach(input=>{
@@ -76,7 +77,7 @@ function renderEditor(){
     }catch(e){fail(e);}
    };
   });
-  $('editor').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(section==='shafts'&&!confirm('軸要素を削除すると後続の節点位置が変わります。円板・軸受などの節点番号を確認してください。削除しますか？'))return;model[section].splice(+b.dataset.delete,1);selected=-1;changed();render();});
+  $('editor').querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{if(section==='shafts'&&!confirm('軸要素を削除すると後続の節点位置が変わります。円板・軸受などの節点番号を確認してください。削除しますか？'))return;shiftBalanceSelection(section,+b.dataset.delete);model[section].splice(+b.dataset.delete,1);selected=-1;changed();render();});
  }else{
   const fields=[['max_rpm','走査上限 [rpm]'],['operating_rpm','確認回転数 [rpm]'],['points',`走査点数（2～${RotorLimits.points}）`],['probe_node','計測節点'],['modes',`表示モード数（1～${RotorLimits.modes}）`]];
   $('editor').innerHTML=`<div class="formgrid">${fields.map(([k,label])=>`<label>${label}<input data-field="${k}" type="text" inputmode="decimal" value="${esc(inputValue(model[section][k],k))}"></label>`).join('')}</div><p class="formhint">確認回転数は走査点に追加されます。静止支持の地面基準で計測します。回転は +z 軸まわり x→y。</p>`;

@@ -2,3 +2,15 @@
 .scroll-table{overflow-x:auto}.sweep-controls{display:flex;align-items:center;flex-wrap:wrap;gap:14px;padding:14px 20px;color:var(--muted);font-size:12px}.sweep-controls select,#sweep-editor select,#number-format{border:1px solid var(--line);border-radius:5px;padding:6px;color:var(--ink);background:white}#sweep-editor td input{max-width:none;min-width:260px;width:100%}#sweep-plot{height:420px}#sweep-stale{margin-top:12px}#editor input{font-variant-numeric:tabular-nums}#editor td button[data-common]{color:var(--blue);font-size:11px}
 
 #editor select{min-width:160px;max-width:260px;padding:6px;border:1px solid var(--line);border-radius:4px;color:var(--ink);background:white}.material-default{padding:16px 20px;display:flex;align-items:center;gap:15px;font-size:12px;color:var(--muted)}.material-default select{margin-left:10px}
+.balance-form{padding:16px 20px;display:grid;gap:12px}
+.balance-form .formhint,.balance-form p{margin:0;padding:0}
+.balance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:12px}
+.balance-grid>label{display:grid;align-content:start;gap:5px}
+.balance-form fieldset{min-width:0;margin:0;border:1px solid var(--line);border-radius:6px}
+.balance-choices{display:grid;gap:4px;max-height:170px;overflow-y:auto}
+.balance-choices label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.balance-form input[type=checkbox]{width:auto;margin:0;accent-color:var(--blue)}
+.balance-form>button{justify-self:start}
+#balance-status:empty,#balance-result:empty{display:none}
+#balance-result h4{margin:0 0 8px}
+#balance-result p{margin:0 0 6px}

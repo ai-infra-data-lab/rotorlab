@@ -132,8 +132,22 @@ class HttpTests(unittest.TestCase):
     def test_page_and_assets(self):
         with urllib.request.urlopen(self.url) as r:
             page=r.read().decode();self.assertIn('RotorLab',page);self.assertIn(self.token,page)
-        for path in ('/app.js','/limits.js','/numeric.js','/sweep.js','/style.css','/plotly.min.js'):
+        for path in ('/app.js','/limits.js','/numeric.js','/sweep.js','/balance.js','/style.css','/plotly.min.js'):
             with urllib.request.urlopen(self.url+path) as r:self.assertGreater(len(r.read()),100)
+
+    def test_balance_endpoint_uses_selected_disk_in_legacy_model(self):
+        model = sample_model()
+        body = {'model': model, 'settings': {'disk_indices': [1], 'grade': 2.5, 'max_rpm': 12000,
+                'plane_count': 2, 'bearing_a_mm': 0, 'bearing_b_mm': 1500,
+                'plane_i_mm': 500, 'plane_ii_mm': 1250}}
+        req = urllib.request.Request(self.url + '/api/balance', json.dumps(body).encode(),
+            {'Content-Type': 'application/json', 'X-RotorLab-Token': self.token})
+        with urllib.request.urlopen(req) as response:
+            result = json.load(response)
+        self.assertEqual(result['mass_kg'], model['disks'][1]['mass_kg'])
+        self.assertEqual(result['center_mm'], 1000)
+        self.assertTrue(result['clause'].startswith('5.2 (1)'))
+        self.assertAlmostEqual(result['planes'][0]['limit_g_mm'], result['total_g_mm'] / 3)
 
     def test_local_api_analysis_and_rejection(self):
         body=json.dumps(sample_model()).encode()
